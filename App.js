@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { Button, Header, Icon, Input, ListItem } from 'react-native-elements';
+import { Avatar, Button, Header, Icon, Input, ListItem } from 'react-native-elements';
 
 export default function App() {
   const [product, setProduct] = useState('');
   const [amount, setAmount] = useState('');
-  const [item, setItem] = useState({product: '', amount: ''});
   const [items, setItems] = useState([]);
-
   
   const saveList = () => {
-    setItem({product: product, amount: amount})
-    //console.log(item)
-    items.push(item)
+    items.push({product: product, amount: amount})
     //setItems([...items, {item}])
     console.log(items)
     setProduct('');
     setAmount('');
-  }
-  
-  const renderItem = ({ items }) => (
+  };
+
+  const remove = (id) => {
+    setItems(items.filter(item => item.id !== id));
+  };
+
+  const renderItem = ({ item }) => (
     <ListItem bottomDivider >
       <ListItem.Content>
         <ListItem.Title>{item.product}</ListItem.Title>
         <ListItem.Subtitle>{item.amount}</ListItem.Subtitle>
+        <Text><Icon name='delete' color='#FF0000' onPress={() => remove(item.id)}/></Text>
       </ListItem.Content>
     </ListItem>
+    
   )
+
   return (
     <View style={styles.container}>
       <Header
@@ -39,18 +42,12 @@ export default function App() {
       <Input placeholder='Amount' label='AMOUNT' onChangeText={amount => setAmount(amount)}
       value={amount}/>
       <Button raised icon={{name: 'save'}} onPress={saveList} title="SAVE" />
-      <FlatList
-        data={items}
-        renderItem={({ items }) => (
-          <ListItem bottomDivider >
-            <ListItem.Content>
-              <ListItem.Title>{item.product}</ListItem.Title>
-              <ListItem.Subtitle>{item.amount}</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
-        )}
-        keyExtractor={(item, index) => index.toString()}
-      />
+
+    <FlatList
+      keyExtractor={keyExtractor = (item, index) => index.toString()}
+      data={items}
+      renderItem={renderItem}
+    />
     </View>
   );
 }
@@ -58,9 +55,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#fff'
   },
 });
 
