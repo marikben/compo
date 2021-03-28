@@ -7,6 +7,7 @@ export default function App() {
   const [amount, setAmount] = useState('');
   const [item, setItem] = useState({product: '', amount: ''});
   const [items, setItems] = useState([]);
+
   
   const saveList = () => {
     setItem({product: product, amount: amount})
@@ -40,7 +41,14 @@ export default function App() {
       <Button raised icon={{name: 'save'}} onPress={saveList} title="SAVE" />
       <FlatList
         data={items}
-        renderItem={renderItem}
+        renderItem={({ items }) => (
+          <ListItem bottomDivider >
+            <ListItem.Content>
+              <ListItem.Title>{item.product}</ListItem.Title>
+              <ListItem.Subtitle>{item.amount}</ListItem.Subtitle>
+            </ListItem.Content>
+          </ListItem>
+        )}
         keyExtractor={(item, index) => index.toString()}
       />
     </View>
